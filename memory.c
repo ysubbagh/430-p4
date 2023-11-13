@@ -33,6 +33,7 @@ bool acceptFile(char* inFile){
     return true;
 }
 
+
 //process the line entered
 bool processLine(char* line){
     //tokenize line
@@ -44,32 +45,35 @@ bool processLine(char* line){
     while(token != NULL){
         if(argsize >= 4){return false;} //invalid access / length 
         args[argsize++] = token;
+        token = strtok(NULL, " ");
     }
     args[argsize] = NULL;
 
     //check command value
     if(equal(args[0], "E")){//exit command
+        printf("E done\n");
         return false;
     }else if(equal(args[0], "S")){ //memory pool state
         //stuff
-        printf("S\n");
+        printf("S done\n");
     }else if(equal(args[0], "C")){ //compact the memory pool
         //stuff
-        printf("C\n");
+        printf("C done\n");
     }else if(equal(args[0], "F")){ //free allocations to certain process
         //stuff
-        printf("F\n");
+        printf("F done\n");
     }else if(equal(args[0], "A")){ //allocate to certain process
         //stuff
-        printf("A\n");
+        printf("A done\n");
     }else if(equal(args[0], "R")){ //read in from file
-        printf("R\n");
+        printf("R done\n");
         return acceptFile(args[1]);
     }else{ //error / invalid entry
         perror("Error: Invalid command.");
         return false;
     }
 }
+
 
 int interactiveShell(){
      //setup vars for loop
@@ -80,16 +84,14 @@ int interactiveShell(){
     while (should_run) {
         int n = fetchline(&line);
         if(n == -1) { //error reading line
+            perror("fetch line broken.\n");
             should_run = false;
             continue;
         }
-
         //check vals
         should_run = processLine(line);
     }
-
 }
-
 
 
 //main function, starting point

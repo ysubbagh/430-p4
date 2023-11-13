@@ -25,3 +25,15 @@ int interactiveShell();
 
 //main function, starting point
 int main();
+
+//allocate memory for a given process
+void allocate(char* args);
+
+//free all allocations owned by a process
+void freeMem(char *args);
+
+//show the state of the memory pool
+void poolState();
+
+//compact the memory pool 
+void compact();
