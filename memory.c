@@ -55,15 +55,19 @@ bool processLine(char* line){
         return false;
     }else if(equal(args[0], "S")){ //memory pool state
         //stuff
+        poolState();
         printf("S done\n");
     }else if(equal(args[0], "C")){ //compact the memory pool
         //stuff
+        compact();
         printf("C done\n");
     }else if(equal(args[0], "F")){ //free allocations to certain process
         //stuff
+        freeMem(args);
         printf("F done\n");
     }else if(equal(args[0], "A")){ //allocate to certain process
         //stuff
+        allocate(args);
         printf("A done\n");
     }else if(equal(args[0], "R")){ //read in from file
         printf("R done\n");
@@ -97,4 +101,10 @@ int interactiveShell(){
 //main function, starting point
 int main(){
     return interactiveShell();
+}
+
+//allocate mem for a process
+void allocate(char* args){
+    
+
 }

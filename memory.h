@@ -26,8 +26,17 @@ int interactiveShell();
 //main function, starting point
 int main();
 
-//allocate memory for a given process
+//allocate memory for a given process, go to picked algorithim
 void allocate(char* args);
+
+//allocate based on first fit
+void firstFit(char name, int size);
+
+//allocate based on fibestrst fit
+void bestFit(char name, int size);
+
+//allocate based on worst fit
+void worstFit(char name, int size);
 
 //free all allocations owned by a process
 void freeMem(char *args);
