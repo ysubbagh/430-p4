@@ -31,12 +31,12 @@ bool acceptFile(char* inFile){
     //setup for parsing
     char *line;
 
-    while(line = fgetc(in)){
-        if(line == EOF){ //reached the end of the file
-
+    while(fgets(line, sizeof(line), in) != NULL){
+        if(processLine(line) == false){ //send line to be proccessed, if exit command then leave
+            fclose(in);
+            return false;
         }
     }
-
 
     //finish reading from file
     fclose(in);
