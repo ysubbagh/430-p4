@@ -1,17 +1,7 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
+#include "memory.h"
 
-//Size of memory, 80 bytes
-#define MEMSIZE 80
-
-// return true if C-strings are equal
 bool equal(char *a, char *b) { return (strcmp(a, b) == 0); }
 
-// read a line from console
-// return length of line read or -1 if failed to read
-// removes the \n on the line read
 int fetchline(char **line) {
   size_t len = 0;
   size_t n = getline(line, &len, stdin);
@@ -62,13 +52,18 @@ bool processLine(char* line){
         return false;
     }else if(equal(args[0], "S")){ //memory pool state
         //stuff
+        printf("S\n");
     }else if(equal(args[0], "C")){ //compact the memory pool
         //stuff
+        printf("C\n");
     }else if(equal(args[0], "F")){ //free allocations to certain process
         //stuff
+        printf("F\n");
     }else if(equal(args[0], "A")){ //allocate to certain process
         //stuff
+        printf("A\n");
     }else if(equal(args[0], "R")){ //read in from file
+        printf("R\n");
         return acceptFile(args[1]);
     }else{ //error / invalid entry
         perror("Error: Invalid command.");
