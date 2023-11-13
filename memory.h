@@ -5,6 +5,8 @@
 
 //Size of memory, 80 bytes
 #define MEMSIZE 80
+//define the memeory pool
+char *pool[MEMSIZE];
 
 // return true if C-strings are equal
 bool equal(char *a, char *b);
@@ -27,22 +29,25 @@ int interactiveShell();
 int main();
 
 //allocate memory for a given process, go to picked algorithim
-void allocate(char* args);
+void allocate(char* args[]);
 
 //allocate based on first fit
-void firstFit(char name, int size);
+void firstFit(char *name, int size);
 
 //allocate based on fibestrst fit
-void bestFit(char name, int size);
+void bestFit(char *name, int size);
 
 //allocate based on worst fit
-void worstFit(char name, int size);
+void worstFit(char *name, int size);
 
 //free all allocations owned by a process
-void freeMem(char *args);
+void freeMem(char *name);
 
 //show the state of the memory pool
 void poolState();
 
 //compact the memory pool 
 void compact();
+
+//inizalie the array to empty chars
+void init();

@@ -51,26 +51,16 @@ bool processLine(char* line){
 
     //check command value
     if(equal(args[0], "E")){//exit command
-        printf("E done\n");
         return false;
     }else if(equal(args[0], "S")){ //memory pool state
-        //stuff
         poolState();
-        printf("S done\n");
     }else if(equal(args[0], "C")){ //compact the memory pool
-        //stuff
         compact();
-        printf("C done\n");
     }else if(equal(args[0], "F")){ //free allocations to certain process
-        //stuff
-        freeMem(args);
-        printf("F done\n");
+        freeMem(args[1]);
     }else if(equal(args[0], "A")){ //allocate to certain process
-        //stuff
         allocate(args);
-        printf("A done\n");
     }else if(equal(args[0], "R")){ //read in from file
-        printf("R done\n");
         return acceptFile(args[1]);
     }else{ //error / invalid entry
         perror("Error: Invalid command.");
@@ -100,11 +90,93 @@ int interactiveShell(){
 
 //main function, starting point
 int main(){
+    init();
     return interactiveShell();
 }
 
 //allocate mem for a process
-void allocate(char* args){
-    
+void allocate(char* args[]){
+    if(args[1] == NULL || strlen(args[1]) > 1){ //inavlid process name
+        perror("Error: Process name invalid.\n");
+        return;
+    }
+    //send to allocate process based on algo choice
+    int size = atoi(args[2]);
+    if(equal(args[3], "F")){ //send to first fit
+        firstFit(args[1], size);
+    }else if(equal(args[3], "B")){ //send to best fit
+        bestFit(args[1], size);
+    }else if(equal(args[3], "W")){ //send to worst fit
+        worstFit(args[1], size);
+    }else{
+        perror("Error: Invalid algorithim choice.\n");
+    }
+}
 
+//allocate based on first fit
+void firstFit(char *name, int size){
+    //printf("first fit for: %s\n", name);
+    int bSize = 0; //size of current block
+    bool found = false;
+    int i = 0;
+    while(!found){
+        if(equal(pool[i], ".")){ //mem is free at location
+            if(i == MEMSIZE - 1){
+                printf("Not enough available memory to allocate: %s.\n", name);
+                return;
+            }else if(bSize >= size){
+                found = true;
+            }else{
+                bSize++;
+            }
+        }else{ //non-free memory
+            if(i == MEMSIZE - 1){
+                printf("Not enough available memory to allocate: %s.\n", name);
+                return;
+            }
+            i++;
+        }
+    }
+    i--;
+}
+
+//allocate based on best fit
+void bestFit(char *name, int size){
+
+
+}
+
+//allocate based on worst fit
+void worstFit(char *name, int size){
+
+
+}
+
+//free all allocations owned by a process
+void freeMem(char *name){
+    for(int i = 0; i < MEMSIZE; i++){
+        if(equal(pool[i], name)){
+            pool[i] = ".";
+        }
+    }
+}
+
+//show the state of the memory pool
+void poolState(){
+    for(int i = 0; i < MEMSIZE; i++){
+        printf("%s", pool[i]);
+    }
+    printf("\n");
+}
+
+//compact the memory pool 
+void compact(){
+
+}
+
+//inizalie the array to period to denote mem area
+void init(){
+    for(int i = 0; i < MEMSIZE; i++){
+        pool[i] = ".";
+    }
 }
