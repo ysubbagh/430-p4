@@ -159,6 +159,7 @@ void worstFit(char *name, int size){
                 }
                 bigBlock = currBlock;
             }
+            currBlock++;
         }else{ //non-free block 
             currLoc = i;
             currBlock = 0;
@@ -170,7 +171,7 @@ void worstFit(char *name, int size){
         return;
     }
     //add to mem pool
-    for(int i = bigLoc; i < size; i++){
+    for(int i = bigLoc; i < size + bigLoc; i++){
         pool[i] = name;
     }
 }
