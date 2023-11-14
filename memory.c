@@ -115,29 +115,29 @@ void allocate(char* args[]){
 
 //allocate based on first fit
 void firstFit(char *name, int size){
-    //printf("first fit for: %s\n", name);
     int bSize = 0; //size of current block
-    bool found = false;
     int i = 0;
-    while(!found){
-        if(equal(pool[i], ".")){ //mem is free at location
-            if(i == MEMSIZE - 1){
-                printf("Not enough available memory to allocate: %s.\n", name);
-                return;
-            }else if(bSize >= size){
-                found = true;
-            }else{
-                bSize++;
-            }
-        }else{ //non-free memory
-            if(i == MEMSIZE - 1){
-                printf("Not enough available memory to allocate: %s.\n", name);
-                return;
+    //find first available free block
+    while(true){
+        if(i >= MEMSIZE){
+            printf("Not enough free memory to allocate: %s\n", name);
+            return;
+        }else if(equal(pool[i], ".")){ //free block
+            bSize++;
+            if(bSize == size){
+                i = i - bSize;
+                break;
             }
             i++;
-        }
+        }else{ //non empty block
+            bSize = 0;
+            i++;
+        }   
     }
-    i--;
+    //add process to memory pool
+    for(int j = i; j < size; j++){
+        pool[j] = name;
+    }
 }
 
 //allocate based on best fit
