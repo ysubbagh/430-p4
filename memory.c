@@ -143,8 +143,31 @@ void firstFit(char *name, int size){
 
 //allocate based on best fit
 void bestFit(char *name, int size){
-
-
+    bool option = false;
+    int currLoc, currBlock, bestLoc, bestBlock = 0;
+    //iterate through to find best fit free block
+    for(int i = 0; i < MEMSIZE; i++){
+        if(equal(pool[i], ".")){
+            currBlock++;
+            if(currBlock >= size && (!option || currBlock < bestBlock)){ //found a better fitting block
+                bestBlock = currBlock;
+                bestLoc = currLoc;
+                option = true;
+            }
+        }else{
+            currBlock = 0;
+            currLoc = i + 1;
+        }
+    }
+    //check if a block was found
+    if(bestBlock == 0){
+        printf("Not enough free memory to allocate: %s\n", name);
+        return;
+    }
+    //add to memory pool
+    for(int j = bestLoc; j < size + bestLoc; j++){
+        pool[j] = name;
+    }
 }
 
 //allocate based on worst fit
@@ -161,7 +184,7 @@ void worstFit(char *name, int size){
             }
             currBlock++;
         }else{ //non-free block 
-            currLoc = i;
+            currLoc = i + 1;
             currBlock = 0;
         }
     }
