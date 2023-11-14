@@ -100,8 +100,12 @@ void allocate(char* args[]){
         perror("Error: Process name invalid.\n");
         return;
     }
-    //send to allocate process based on algo choice
     int size = atoi(args[2]);
+    if(size > MEMSIZE){// block is too big for pool
+        printf("%s is too big for memory.\n", args[1]);
+        return;
+    }
+    //send to allocate process based on algo choice
     if(equal(args[3], "F")){ //send to first fit
         firstFit(args[1], size);
     }else if(equal(args[3], "B")){ //send to best fit
@@ -115,27 +119,24 @@ void allocate(char* args[]){
 
 //allocate based on first fit
 void firstFit(char *name, int size){
+    int loc = 0;
     int bSize = 0; //size of current block
-    int i = 0;
     //find first available free block
-    while(true){
-        if(i >= MEMSIZE){
+    for(int i = 0; i <= MEMSIZE; i++){
+        if(i == MEMSIZE){ //not enough space found
             printf("Not enough free memory to allocate: %s\n", name);
             return;
-        }else if(equal(pool[i], ".")){ //free block
-            bSize++;
-            if(bSize == size){
-                i = i - bSize;
-                break;
-            }
-            i++;
-        }else{ //non empty block
+        }
+        if(equal(pool[i], ".")){ //empty block
+            bSize++;   
+            if(bSize == size){break;}
+        }else{
             bSize = 0;
-            i++;
-        }   
+            loc = i + 1;
+        }
     }
     //add process to memory pool
-    for(int j = i; j < size; j++){
+    for(int j = loc; j < loc + size; j++){
         pool[j] = name;
     }
 }
@@ -148,8 +149,30 @@ void bestFit(char *name, int size){
 
 //allocate based on worst fit
 void worstFit(char *name, int size){
-
-
+    int currLoc, currBlock, bigLoc, bigBlock = 0;
+    //iterate through the pool to find the biggest block
+    for(int i = 0; i < MEMSIZE; i++){
+        if(equal(pool[i], ".")){ //free block
+            if(currBlock > bigBlock){ //found a bigger block
+                if(currLoc != bigLoc) {//bigger block is at a new loaction
+                    bigLoc = currLoc;
+                }
+                bigBlock = currBlock;
+            }
+        }else{ //non-free block 
+            currLoc = i;
+            currBlock = 0;
+        }
+    }
+    //check if block is big enough
+    if(bigBlock < size){
+        printf("Not enough free memory to allocate: %s\n", name);
+        return;
+    }
+    //add to mem pool
+    for(int i = bigLoc; i < size; i++){
+        pool[i] = name;
+    }
 }
 
 //free all allocations owned by a process
