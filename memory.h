@@ -49,5 +49,8 @@ void poolState();
 //compact the memory pool 
 void compact();
 
+//helper function for compaction, swap free blocks with used blocks
+void swapBlocks(int lowFree, int highFree, int lowUsed, int highUsed);
+
 //inizalie the array to empty chars
 void init();

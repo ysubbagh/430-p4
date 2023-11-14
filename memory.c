@@ -30,6 +30,7 @@ bool acceptFile(char* inFile){
 
     //finish reading from file
     fclose(in);
+    free(line);
     return true;
 }
 
@@ -85,6 +86,7 @@ int interactiveShell(){
         //check vals
         should_run = processLine(line);
     }
+    free(line);
 }
 
 
@@ -218,7 +220,14 @@ void poolState(){
 
 //compact the memory pool 
 void compact(){
+    int lowFree, highFree, lowUsed, highUsed = -1;
+    for(int i = 0; i < MEMSIZE; i ++){
+        if(equal(pool[i], ".")){ //in a free block
+            highFree = i;
+        }else{
 
+        }
+    }
 }
 
 //inizalie the array to period to denote mem area
