@@ -19,18 +19,41 @@ bool acceptFile(char* inFile){
         return false;
     }
     //setup for parsing
-    char *line;
+    char line[MEMSIZE];
+    char arg[5];
+    char *token;
 
-    while(fgets(line, sizeof(line), in) != NULL){
-        if(processLine(line) == false){ //send line to be proccessed, if exit command then leave
-            fclose(in);
+    //read through file
+    while(fgets(line, MEMSIZE, in) != NULL){
+        printf("line: %s.", line);
+
+        token = strtok(line, " ");
+        int i = 0;
+        while(token != NULL){
+            strcpy(arg[i], token);
+            token = strtok(NULL, " ");
+            i++;
+        }
+
+        //send to be completed
+        if(equal(arg[0], "E")){//exit command
+            return false;
+        }else if(equal(arg[0], "S")){ //memory pool state
+            poolState();
+        }else if(equal(arg[0], "C")){ //compact the memory pool
+            compact();
+        }else if(equal(arg[0], "F") || equal(arg[0], "A")){ //free allocations to certain process
+            freeMem(arg[3]);
+        }else if(equal(arg[0], "A")){ //allocate to certain process
+            allocate(arg);
+        }else{ //error / invalid entry
+            perror("Error: Invalid command.");
             return false;
         }
     }
 
     //finish reading from file
     fclose(in);
-    free(line);
     return true;
 }
 
