@@ -18,43 +18,26 @@ bool acceptFile(char* inFile){
         perror("Error: file could not be opened.");
         return false;
     }
-    //setup for parsing
-    char line[MEMSIZE];
-    char arg[5];
-    char *token;
+    //for return
+    bool cont = true;
+    //for parsing 
+    char *line = NULL;
+    size_t len = 0;
+    __ssize_t read;
 
-    //read through file
-    while(fgets(line, MEMSIZE, in) != NULL){
-        printf("line: %s.", line);
+    while((read = getline(&line, &len, in)) > -1){
+        //remove \n from end of line
+        line[strcspn(line, "\n")] = '\0';
 
-        token = strtok(line, " ");
-        int i = 0;
-        while(token != NULL){
-            strcpy(arg[i], token);
-            token = strtok(NULL, " ");
-            i++;
-        }
+        printf("line: %s\n", line);
 
-        //send to be completed
-        if(equal(arg[0], "E")){//exit command
-            return false;
-        }else if(equal(arg[0], "S")){ //memory pool state
-            poolState();
-        }else if(equal(arg[0], "C")){ //compact the memory pool
-            compact();
-        }else if(equal(arg[0], "F") || equal(arg[0], "A")){ //free allocations to certain process
-            freeMem(arg[3]);
-        }else if(equal(arg[0], "A")){ //allocate to certain process
-            allocate(arg);
-        }else{ //error / invalid entry
-            perror("Error: Invalid command.");
-            return false;
-        }
+        cont = processLine(line);
+
+        if(!cont){break;}
     }
-
     //finish reading from file
     fclose(in);
-    return true;
+    return cont;
 }
 
 
@@ -83,6 +66,10 @@ bool processLine(char* line){
     }else if(equal(args[0], "F")){ //free allocations to certain process
         freeMem(args[1]);
     }else if(equal(args[0], "A")){ //allocate to certain process
+        printf("args: ");
+        for(int i = 0; i < 5; i++){
+            printf("%s, ", args[i]);
+        }
         allocate(args);
     }else if(equal(args[0], "R")){ //read in from file
         return acceptFile(args[1]);
@@ -103,13 +90,11 @@ int interactiveShell(){
         int n = fetchline(&line);
         if(n == -1) { //error reading line
             perror("fetch line broken.\n");
-            should_run = false;
-            continue;
-        }
+            break;
+        }else if(line[0] == '\0'){continue;} //nothing entered
         //check vals
         should_run = processLine(line);
     }
-    free(line);
 }
 
 
@@ -138,6 +123,7 @@ void allocate(char* args[]){
     }else if(equal(args[3], "W")){ //send to worst fit
         worstFit(args[1], size);
     }else{
+        printf("%s\n", args[3]);
         perror("Error: Invalid algorithim choice.\n");
     }
 }
