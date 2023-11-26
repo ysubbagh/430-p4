@@ -66,10 +66,6 @@ bool processLine(char* line){
     }else if(equal(args[0], "F")){ //free allocations to certain process
         freeMem(args[1]);
     }else if(equal(args[0], "A")){ //allocate to certain process
-        printf("args: ");
-        for(int i = 0; i < 5; i++){
-            printf("%s, ", args[i]);
-        }
         allocate(args);
     }else if(equal(args[0], "R")){ //read in from file
         return acceptFile(args[1]);
@@ -229,12 +225,42 @@ void poolState(){
 
 //compact the memory pool 
 void compact(){
-    int lowFree, highFree, lowUsed, highUsed = -1;
-    for(int i = 0; i < MEMSIZE; i ++){
+    int lowFree, highFree, lowUsed, highUsed = 0;
+    for(int i = 0; i < MEMSIZE; i++){
         if(equal(pool[i], ".")){ //in a free block
-            highFree = i;
-        }else{
+            lowFree = i;
+            if(!equal(pool[i], ".")){
+                highFree = i - 1;
+                lowUsed = i;
+                while(i < MEMSIZE && !equal(pool[i], ".")){ i++; }
+                highUsed = i - 1;
+                swapBlocks(lowFree, highFree, lowUsed, lowUsed);
+                i = 0;
+            }
+        }
+    }
+}
 
+//helper function for compaction
+void swapBlocks(int lowFree, int highFree, int lowUsed, int highUsed){
+    char *temp;
+    int freeSize = highFree - lowFree;
+    int usedSize = highUsed - lowUsed;
+    if(freeSize <= usedSize){
+        while(lowFree <= highFree){
+            strcpy(temp, pool[lowUsed]);
+            strcpy(pool[lowUsed], pool[lowFree]);
+            strcpy(pool[lowFree], temp);
+            lowUsed++;
+            lowFree++;
+        }
+    }else{ //free size larger
+        while(lowUsed <= highUsed){
+            strcpy(temp, pool[lowUsed]);
+            strcpy(pool[lowUsed], pool[lowFree]);
+            strcpy(pool[lowFree], temp);
+            lowUsed++;
+            lowFree++;
         }
     }
 }

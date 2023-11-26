@@ -1,3 +1,6 @@
+#ifndef MEMORY_H
+#define MEMORY_H
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -54,3 +57,5 @@ void swapBlocks(int lowFree, int highFree, int lowUsed, int highUsed);
 
 //inizalie the array to empty chars
 void init();
+
+#endif 
