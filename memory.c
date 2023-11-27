@@ -225,40 +225,47 @@ void poolState(){
 
 //compact the memory pool 
 void compact(){
+    int i = 0;
     int lowFree, highFree, lowUsed, highUsed = 0;
-    for(int i = 0; i < MEMSIZE; i++){
-        if(equal(pool[i], ".")){ //in a free block
+    while(i < MEMSIZE){
+        if(equal(pool[i], ".")){
             lowFree = i;
-            if(!equal(pool[i], ".")){
-                highFree = i - 1;
-                lowUsed = i;
-                while(i < MEMSIZE && !equal(pool[i], ".")){ i++; }
-                highUsed = i - 1;
-                swapBlocks(lowFree, highFree, lowUsed, lowUsed);
-                i = 0;
+            while(i < MEMSIZE && equal(pool[i], ".")){
+                i++;
             }
-        }
+            highFree = i - 1;
+            if(i == MEMSIZE){
+                break;
+            }
+            lowUsed = i;
+            while(i < MEMSIZE && !equal(pool[i], ".")){
+                i++;
+            }
+            highUsed = i - 1;
+            slide(lowFree, highFree, lowUsed, highUsed);
+            i = 0;
+        }else{ i++; }
     }
 }
 
 //helper function for compaction
-void swapBlocks(int lowFree, int highFree, int lowUsed, int highUsed){
+void slide(int lowFree, int highFree, int lowUsed, int highUsed){
     char *temp;
     int freeSize = highFree - lowFree;
     int usedSize = highUsed - lowUsed;
-    if(freeSize <= usedSize){
+    if(freeSize < usedSize){
         while(lowFree <= highFree){
-            strcpy(temp, pool[lowUsed]);
-            strcpy(pool[lowUsed], pool[lowFree]);
-            strcpy(pool[lowFree], temp);
+            temp = pool[lowUsed];
+            pool[lowUsed] = pool[lowFree];
+            pool[lowFree] = temp;
             lowUsed++;
             lowFree++;
         }
     }else{ //free size larger
         while(lowUsed <= highUsed){
-            strcpy(temp, pool[lowUsed]);
-            strcpy(pool[lowUsed], pool[lowFree]);
-            strcpy(pool[lowFree], temp);
+            temp = pool[lowUsed];
+            pool[lowUsed] = pool[lowFree];
+            pool[lowFree] = temp;
             lowUsed++;
             lowFree++;
         }
