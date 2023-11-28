@@ -13,4 +13,4 @@ echo "Executing: ./a.out"
 ./a.out
 
 # to check for memory leaks, use
-#valgrind ./a.out
+valgrind ./a.out

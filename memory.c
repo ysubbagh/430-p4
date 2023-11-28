@@ -1,7 +1,9 @@
 #include "memory.h"
 
+//check if 2 strings are the same
 bool equal(char *a, char *b) { return (strcmp(a, b) == 0); }
 
+//get line from terminal
 int fetchline(char **line) {
   size_t len = 0;
   size_t n = getline(line, &len, stdin);
@@ -20,6 +22,7 @@ bool acceptFile(char* inFile){
     }
     //for return
     bool cont = true;
+
     //for parsing 
     char *line = NULL;
     size_t len = 0;
@@ -37,6 +40,7 @@ bool acceptFile(char* inFile){
     }
     //finish reading from file
     fclose(in);
+    free(line);
     return cont;
 }
 
@@ -73,9 +77,13 @@ bool processLine(char* line){
         perror("Error: Invalid command.");
         return false;
     }
+    free(token);
+    for(int i = 0; i < 5; i++){
+        free(args[i]);
+    }
 }
 
-
+//get lines from the terminal and send off to be proccessed
 int interactiveShell(){
      //setup vars for loop
     bool should_run = true;
@@ -91,6 +99,7 @@ int interactiveShell(){
         //check vals
         should_run = processLine(line);
     }
+    free(line);
 }
 
 
@@ -244,7 +253,9 @@ void compact(){
             highUsed = i - 1;
             slide(lowFree, highFree, lowUsed, highUsed);
             i = 0;
-        }else{ i++; }
+        }else{ 
+            i++; 
+        }
     }
 }
 
@@ -270,6 +281,7 @@ void slide(int lowFree, int highFree, int lowUsed, int highUsed){
             lowFree++;
         }
     }
+    free(temp);
 }
 
 //inizalie the array to period to denote mem area

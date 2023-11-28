@@ -52,7 +52,7 @@ void poolState();
 //compact the memory pool 
 void compact();
 
-//helper function for compaction, swap free blocks with used blocks
+//helper function for compaction, slide used blocks down the free space
 void slide(int lowFree, int highFree, int lowUsed, int highUsed);
 
 //inizalie the array to empty chars
