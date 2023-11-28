@@ -77,10 +77,6 @@ bool processLine(char* line){
         perror("Error: Invalid command.");
         return false;
     }
-    free(token);
-    for(int i = 0; i < 5; i++){
-        free(args[i]);
-    }
 }
 
 //get lines from the terminal and send off to be proccessed
@@ -281,7 +277,6 @@ void slide(int lowFree, int highFree, int lowUsed, int highUsed){
             lowFree++;
         }
     }
-    free(temp);
 }
 
 //inizalie the array to period to denote mem area
